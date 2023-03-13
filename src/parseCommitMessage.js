@@ -13,6 +13,13 @@ async function parseCommitMessage(message, repoUrl, fetchUserFunc) {
         subject: message.split("\n")[0],
         type: "feature",
       };
+    } else if (/(H|h)otfix\//.test(message)) {
+      message = message.replace(/(H|h)otfix\//, '');
+      message[0] = message[0].toUpperCase();
+      cAst = {
+        subject: message.split("\n")[0],
+        type: "bugfix",
+      };
     } else {
       const ast = parser(message);
       cAst = toConventionalChangelogFormat(ast);
