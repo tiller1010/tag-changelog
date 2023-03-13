@@ -10820,8 +10820,17 @@ async function parseCommitMessage(message, repoUrl, fetchUserFunc) {
   let cAst;
 
   try {
-    const ast = parser(message);
-    cAst = toConventionalChangelogFormat(ast);
+    if (/(F|f)eature\//.test(message)) {
+      message = message.replace(/(F|f)eature\//, '');
+      message[0] = message[0].toUpperCase();
+      cAst = {
+        subject: message.split("\n")[0],
+        type: "feature",
+      };
+    } else {
+      const ast = parser(message);
+      cAst = toConventionalChangelogFormat(ast);
+    }
   } catch (error) {
     // Not a valid commit
     cAst = {
